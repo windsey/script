@@ -1,0 +1,61 @@
+#!/bin/bash -e
+
+_check()
+{
+for bin in {nslookup,host,awk,sed,head,tail}
+do
+    binary="$(which $bin)" || true
+    if [ "${binary:0:1}" != '/' ]
+    then
+        echo "command ${bin} not found"
+        exit 1
+    elif ! [ -x "$binary" ]
+    then
+        echo "command ${bin} not has execute access"
+        exit 1
+    fi
+done
+}
+
+_clean(){
+    sed -i '/translate.googleapis.com/d' /etc/hosts
+}
+
+_fixhosts(){
+    case "$1" in [0-9]*.[0-9]*.[0-9]*.[0-9]*)
+        echo "$1  translate.googleapis.com" >> /etc/hosts
+    ;;
+    esac
+}
+
+_lookup(){
+    for i in {google.cn,update.googleapis.com}; do
+        ip1="$(printf $(nslookup $i 8.8.8.8 | tail -n2 | awk '{print $2}'))"
+        ip2="$(printf $(host $i | awk '{print $4}'))"
+        ip3="$(printf $(nslookup $i 223.5.5.5 | tail -n2 | awk '{print $2}'))"
+        ip4="$(printf $(host $i 114.114.114.114 | awk '{print $4}'))"
+        ip5="$(printf $(nslookup $i 58.20.127.238 | tail -n2 | awk '{print $2}'))"
+        ip6="$(printf $(nslookup $i 58.20.127.170 | tail -n2 | awk '{print $2}'))"
+        if [ -n ${ip1} ]; then _fixhosts ${ip1}; fi
+        if [ -n ${ip2} ]; then _fixhosts ${ip2}; fi
+        if [ -n ${ip3} ]; then _fixhosts ${ip3}; fi
+        if [ -n ${ip4} ]; then _fixhosts ${ip4}; fi
+        if [ -n ${ip5} ]; then _fixhosts ${ip5}; fi
+        if [ -n ${ip6} ]; then _fixhosts ${ip6}; fi
+    done
+}
+
+
+if ! [ $(id -u) = 0 ]; then
+    echo 'you must run this as root'
+    exit 1
+else
+    _check
+    _clean
+    _lookup
+    awk '!a[$0]++' /etc/hosts > /tmp/hosts
+    mv -f /tmp/hosts /etc/hosts
+    printf 'done.\n'
+fi
+
+# for ip in `grep 'translate.googleapis.com' /etc/hosts|awk '{print $1}'`; do ping "$ip" -c 3; printf '\n'; done
