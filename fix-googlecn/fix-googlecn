@@ -2,7 +2,7 @@
 
 _check()
 {
-for bin in {nslookup,host,awk,sed,head,tail}
+for bin in {nslookup,host,awk,sed,head,tail,printf}
 do
     binary="$(which $bin)" || true
     if [ "${binary:0:1}" != '/' ]
