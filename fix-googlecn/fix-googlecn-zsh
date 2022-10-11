@@ -6,7 +6,7 @@ _which(){
 
 _check()
 {
-for bin in {nslookup,host,awk,sed,head,tail}
+for bin in {nslookup,host,awk,sed,head,tail,printf,sort,grep}
 do
     if [ "$(_which $bin)" = "$bin not found" ]
     then
@@ -21,7 +21,7 @@ done
 }
 
 _clean(){
-    sed -i '/translate.googleapis.com/d' /etc/hosts
+    sed -i '/translate.googleapis.com/d' $1
 }
 
 _fixhosts(){
@@ -56,7 +56,10 @@ else
     _clean
     _lookup
     awk '!a[$0]++' /etc/hosts > /tmp/hosts
-    mv -f /tmp/hosts /etc/hosts
+    cp /tmp/hosts{,2} && _clean /tmp/hosts2
+    grep translate.googleapis.com /tmp/hosts | sort -g >> /tmp/hosts2
+    rm -f /tmp/hosts
+    mv -f /tmp/hosts2 /etc/hosts
     printf 'done.\n'
 fi
 
