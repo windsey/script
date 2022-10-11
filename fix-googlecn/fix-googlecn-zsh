@@ -60,4 +60,4 @@ else
     printf 'done.\n'
 fi
 
-# for ip in `grep 'translate.googleapis.com' /etc/hosts|awk '{print $1}'`; do ping $i -c 3; printf '\n'; done
+# for ip in `grep 'translate.googleapis.com' /etc/hosts|awk '{print $1}'`; do ping "$ip" -c 3; printf '\n'; done
