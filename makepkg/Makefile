@@ -11,11 +11,11 @@ SHELL ?= ${BINDIR}/bash
 OUTDIR = ${DESTDIR}/${DATADIR}/makepkg/tity
 CONFDIR = ${DESTDIR}/${SYSCONFDIR}/pacman.d
 
-all: ${INIT_FILES} ${CONF_FILES}
+all: ${INPUT_FILES} ${CONF_FILES}
 
 %: %.sh
 	sed -e 's:@SHELL@:${SHELL}:g' $< > $@
-    sed -e 's:@DATADIR@:${DATADIR}:g' $< > $@
+	sed -e 's:@DATADIR@:${DATADIR}:g' $< > $@
 
 install: ${SHELL_FILES}
 	install -d "${OUTDIR}" "${CONFDIR}"
