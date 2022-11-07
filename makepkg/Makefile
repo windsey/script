@@ -7,16 +7,14 @@ BINDIR    ?= ${PREFIX}/bin
 DATADIR ?= ${PREFIX}/share
 RUNSHELL ?= ${BINDIR}/bash
 
-OUTDIR = ${DESTDIR}/${DATADIR}/makepkg/tity
+INSDIR = ${DESTDIR}/${DATADIR}/makepkg/tity
 CONFDIR = ${DESTDIR}/${SYSCONFDIR}/pacman.d
 
-all: ${INPUT_FILES}
+build:
+	sed -e 's:@DATADIR@:${DATADIR}:g' -i ${INPUT_FILES}
+	sed -e 's:@RUNSHELL@:${RUNSHELL}:g' -i ${INPUT_FILES}
 
-%: %
-	sed -e 's:@DATADIR@:${DATADIR}:g' -i $@
-	sed -e 's:@RUNSHELL@:${RUNSHELL}:g' -i $@
-
-install: all
-	install -d "${OUTDIR}" "${CONFDIR}"
+install: build
+	install -d "${INSDIR}" "${CONFDIR}"
 	install -m 644 -t "${OUTDIR}" ${INPUT_FILES}
 	install -m 644 -t "${CONFDIR}" ${CONF_FILES}
