@@ -5,7 +5,7 @@ SYSCONFDIR ?= /etc
 PREFIX    ?= /usr
 BINDIR    ?= ${PREFIX}/bin
 DATADIR ?= ${PREFIX}/share
-SHELL ?= ${BINDIR}/bash
+RUNSHELL ?= ${BINDIR}/bash
 
 OUTDIR = ${DESTDIR}/${DATADIR}/makepkg/tity
 CONFDIR = ${DESTDIR}/${SYSCONFDIR}/pacman.d
@@ -13,7 +13,7 @@ CONFDIR = ${DESTDIR}/${SYSCONFDIR}/pacman.d
 all: ${INPUT_FILES}
 
 %:
-	sed -e 's:@SHELL@:${SHELL}:g' $< > $@
+	sed -e 's:@RUNSHELL@:${RUNSHELL}:g' $< > $@
 	sed -e 's:@DATADIR@:${DATADIR}:g' $< > $@
 
 install:
