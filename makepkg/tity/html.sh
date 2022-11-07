@@ -43,7 +43,7 @@ _html() {
             cp -a "$d" "${PKGDEST}/HTML/usr/share/doc/$pkgname/"html
             rm -r "$d"
         done
-	    pushd "${PKGDEST}/HTML" &>/dev/null
+        pushd "${PKGDEST}/HTML" &>/dev/null
         [[ ! -f "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz" ]] || rm -f "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz"
         bsdtar -zcf "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz" *
         popd &>/dev/null
