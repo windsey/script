@@ -16,5 +16,5 @@ build:
 
 install: build
 	install -d "${INSDIR}" "${CONFDIR}"
-	install -m 644 -t "${OUTDIR}" ${INPUT_FILES}
+	install -m 644 -t "${INSDIR}" ${INPUT_FILES}
 	install -m 644 -t "${CONFDIR}" ${CONF_FILES}
