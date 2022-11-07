@@ -1,4 +1,4 @@
-#!@SHELL@
+#!@RUNSHELL@
 #
 #   docs.sh - Remove documentation files from the package
 #
