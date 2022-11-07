@@ -42,14 +42,14 @@ _html() {
             install -d "${PKGDEST}/HTML/usr/share/doc/$pkgname"
             cp -a "$d" "${PKGDEST}/HTML/usr/share/doc/$pkgname/"html
             rm -r "$d"
-
-            pushd "${PKGDEST}/HTML" &>/dev/null
-            [[ ! -f "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz" ]] || rm -f "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz"
-            bsdtar -zcf "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz" *
-            popd &>/dev/null
-            rm -r "${PKGDEST}/HTML/usr"
         done
+	    pushd "${PKGDEST}/HTML" &>/dev/null
+        [[ ! -f "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz" ]] || rm -f "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz"
+        bsdtar -zcf "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz" *
+        popd &>/dev/null
+        rm -r "${PKGDEST}/HTML/usr"
     fi
+	
     for d in ${DOC_DIRS[@]}; do
         [[ ! -d "$d" ]] || find "$d" -depth -type d -exec rmdir '{}' \; 2>/dev/null
     done
