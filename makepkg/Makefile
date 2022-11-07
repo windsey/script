@@ -13,10 +13,10 @@ CONFDIR = ${DESTDIR}/${SYSCONFDIR}/pacman.d
 all: ${INPUT_FILES}
 
 %: %
-	sed -e 's:@DATADIR@:${DATADIR}:g' $< > $@
-	sed -e 's:@RUNSHELL@:${RUNSHELL}:g' $< > $@
+	sed -e 's:@DATADIR@:${DATADIR}:g' -i $@
+	sed -e 's:@RUNSHELL@:${RUNSHELL}:g' -i $@
 
-install:
+install: all
 	install -d "${OUTDIR}" "${CONFDIR}"
 	install -m 644 -t "${OUTDIR}" ${INPUT_FILES}
 	install -m 644 -t "${CONFDIR}" ${CONF_FILES}
