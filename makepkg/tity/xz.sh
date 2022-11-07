@@ -21,7 +21,7 @@
 [[ -n "$LIBMAKEPKG_TIDY_XZ_SH" ]] && return
 LIBMAKEPKG_TIDY_XZ_SH=1
 
-LIBRARY=${LIBRARY:-'/usr/share/makepkg'}
+LIBRARY=${LIBRARY:-'@DATADIR@/makepkg'}
 
 source "$LIBRARY/util/message.sh"
 source "$LIBRARY/util/option.sh"
@@ -32,6 +32,6 @@ tidy_remove+=('tidy_xz')
 tidy_xz() {
 	if check_option "xz" "y"; then
 		msg2 "$(gettext "Compress the package using xz...")"
-        PKGEXT='.pkg.tar.xz'
+		PKGEXT='.pkg.tar.xz'
 	fi
 }
