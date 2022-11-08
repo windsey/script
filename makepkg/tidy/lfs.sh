@@ -1,6 +1,6 @@
 #!@RUNSHELL@
 #
-#   docs.sh - Remove documentation files from the package
+#   lfs.sh - Set up package provides and groups
 #
 #   Copyright (c) 2008-2021 Pacman Development Team <pacman-dev@archlinux.org>
 #

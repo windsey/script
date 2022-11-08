@@ -1,8 +1,8 @@
 #!@RUNSHELL@
 #
-#   Prepare directory "$srcdir/build", create it if it doesn't exist
+#   xz.sh - Compress the package using xz
 #
-#   Copyright (c) 2021 Pacman Development Team <pacman-dev@archlinux.org>
+#   Copyright (c) 2008-2021 Pacman Development Team <pacman-dev@archlinux.org>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -18,18 +18,20 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-[[ -n "$LIBMAKEPKG_BUILDENV_PRE_SH" ]] && return
-LIBMAKEPKG_BUILDENV_PRE_SH=1
+[[ -n "$LIBMAKEPKG_TIDY_XZ_SH" ]] && return
+LIBMAKEPKG_TIDY_XZ_SH=1
 
 LIBRARY=${LIBRARY:-'@DATADIR@/makepkg'}
 
+source "$LIBRARY/util/message.sh"
 source "$LIBRARY/util/option.sh"
 
-build_options+=('pre')
-buildenv_functions+=('buildenv_pre')
+packaging_options+=('xz')
+tidy_remove+=('tidy_xz')
 
-buildenv_pre() {
-	if ! check_option "pre" "n"; then
-		[[ -d "$srcdir/build" ]] || mkdir "$srcdir/build"
+tidy_xz() {
+	if check_option "xz" "y"; then
+		msg2 "$(gettext "Compress the package using xz...")"
+		PKGEXT='.pkg.tar.xz'
 	fi
 }

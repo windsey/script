@@ -1,6 +1,6 @@
 #!@RUNSHELL@
 #
-#   locale.sh - Remove locale files from the package
+#   locale.sh - Remove locale files except 'en/zh' from the package
 #
 
 [[ -n "$LIBMAKEPKG_TIDY_LOCALE_SH" ]] && return

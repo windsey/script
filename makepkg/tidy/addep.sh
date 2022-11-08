@@ -1,4 +1,8 @@
 #!@RUNSHELL@
+#
+#   addep.sh - Add dependencies through shared libraries
+#
+#   Copyright (c)
 
 [[ -n "$LIBMAKEPKG_TIDY_ADDEP_SH" ]] && return
 LIBMAKEPKG_TIDY_ADDEP_SH=1

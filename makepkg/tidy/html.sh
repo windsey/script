@@ -1,6 +1,6 @@
 #!@RUNSHELL@
 #
-#   docs.sh - Remove documentation files from the package
+#   html.sh - Split HTML documentation files from the package
 #
 #   Copyright (c) 2008-2021 Pacman Development Team <pacman-dev@archlinux.org>
 #

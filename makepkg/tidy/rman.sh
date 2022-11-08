@@ -1,6 +1,6 @@
 #!@RUNSHELL@
 #
-#   docs.sh - Remove documentation files from the package
+#   rman.sh - Deletes the specified manual page directory
 #
 #   Copyright (c) 2008-2021 Pacman Development Team <pacman-dev@archlinux.org>
 #
@@ -18,20 +18,20 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-[[ -n "$LIBMAKEPKG_TIDY_XZ_SH" ]] && return
-LIBMAKEPKG_TIDY_XZ_SH=1
+[[ -n "$LIBMAKEPKG_TIDY_RMAN_SH" ]] && return
+LIBMAKEPKG_TIDY_RMAN_SH=1
 
 LIBRARY=${LIBRARY:-'@DATADIR@/makepkg'}
 
 source "$LIBRARY/util/message.sh"
 source "$LIBRARY/util/option.sh"
 
-packaging_options+=('xz')
-tidy_remove+=('tidy_xz')
+packaging_options+=('rman')
+tidy_remove+=('tidy_rman')
 
-tidy_xz() {
-	if check_option "xz" "y"; then
-		msg2 "$(gettext "Compress the package using xz...")"
-		PKGEXT='.pkg.tar.xz'
+tidy_rman() {
+	if check_option "rman" "y" && [[ -n ${RM_MAN[*]} ]]; then
+		msg2 "$(gettext "Removing doc files..."|sed 's/doc/specified/')"
+		rm -rf -- ${RM_MAN[@]}
 	fi
 }

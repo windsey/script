@@ -1,6 +1,6 @@
 #!@RUNSHELL@
 #
-#   Prepare directory "$srcdir/build", create it if it doesn't exist
+#   Set the SOURCE_DATE_EPOCH variable for reproducible builds
 #
 #   Copyright (c) 2021 Pacman Development Team <pacman-dev@archlinux.org>
 #
@@ -18,18 +18,18 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-[[ -n "$LIBMAKEPKG_BUILDENV_PRE_SH" ]] && return
-LIBMAKEPKG_BUILDENV_PRE_SH=1
+[[ -n "$LIBMAKEPKG_BUILDENV_REPRO_SH" ]] && return
+LIBMAKEPKG_BUILDENV_REPRO_SH=1
 
 LIBRARY=${LIBRARY:-'@DATADIR@/makepkg'}
 
 source "$LIBRARY/util/option.sh"
 
-build_options+=('pre')
-buildenv_functions+=('buildenv_pre')
+build_options+=('repro')
+buildenv_functions+=('buildenv_repro')
 
-buildenv_pre() {
-	if ! check_option "pre" "n"; then
-		[[ -d "$srcdir/build" ]] || mkdir "$srcdir/build"
+buildenv_repro() {
+	if check_option "repro" "y" && [[ -e "/etc/pacman.d/epoch" ]]; then
+		. "/etc/pacman.d/epoch"
 	fi
 }
