@@ -1,4 +1,4 @@
-INPUT_FILES = ${wildcard tity/*.sh}
+INPUT_FILES = ${wildcard tity/*.sh buildenv/*.sh}
 CONF_FILES  = ${wildcard pacman.d/*}
 
 SYSCONFDIR ?= /etc
