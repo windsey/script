@@ -1,0 +1,131 @@
+#!/bin/bash -e
+shopt -s extglob
+
+DESTDIR="/mnt"
+
+PKG=(
+    bash
+#    filesystem-lfs
+    glibc
+    gcc
+    kmod
+    ncurses
+    readline
+    shadow
+    systemd
+attr
+acl
+bzip2
+coreutils
+cryptsetup
+e2fsprogs
+file
+gzip
+json-c
+kernel
+libaio
+libcap
+libffi
+libgcrypt
+libgpg-error
+libtasn1
+lvm2
+lz4
+openssl
+pam-lfs
+popt
+p11-kit
+util-linux
+xz
+zlib
+zstd
+)
+
+INS_D(){
+    if [[ ! "$1" =~ '/usr/share/man' ]] && [[ ! "$1" =~ '/usr/share/doc' ]] && \
+    [[ ! "$1" =~ '/usr/share/info' ]] && [[ ! "$1" =~ '/usr/include' ]] && \
+    [[ ! "$1" =~ '/pkgconfig/' ]] && [[ ! "$1" =~ '/usr/lib/gcc/' ]] && \
+    [[ ! "$1" =~ '/usr/libexec/gcc/' ]]
+    then
+        [ -d "$DESTDIR/${1#/}" ] || install -dv "$DESTDIR/${1#/}"
+    fi
+}
+
+INS_F(){
+    if [[ ! "$1" =~ '/usr/share/man' ]] && [[ ! "$1" =~ '/usr/share/doc' ]] && \
+    [[ ! "$1" =~ '/usr/share/info' ]] && [[ ! "$1" =~ '/usr/include' ]] && \
+    [[ ! "$1" =~ '/pkgconfig/' ]] && [[ ! "$1" =~ '/usr/lib/gcc/' ]] && \
+    [[ ! "$1" =~ '/usr/libexec/gcc/' ]]
+    then
+        [ -L "$1" ] && _cp_link "$1" "Creating symbolic link..." || _cp_file "$1"
+    fi
+}
+
+_cp_file(){
+    [ -e "$DESTDIR/${1#/}" ] || _chmod_file "$1"
+}
+
+_cp_link(){
+    [ -z "$2" ] || printf "$2\n"
+    [ -L "$DESTDIR/${1:1}" ] || ln -s -v "$(readlink $1)" "$DESTDIR/${1:1}"
+}
+
+_chmod_file(){
+    case "$1" in
+    /usr/bin/*|/usr/sbin/*|/usr/lib/*.so*)
+        install -Dv -m 755 "$1" "$DESTDIR/${1#/}"
+    ;;
+    *)
+        install -Dv -m 644 "$1" "$DESTDIR/${1#/}"
+    ;;
+    esac
+}
+
+COPY_PKG_FILES(){
+    for f in $(pacman -Qql "$1"); do
+        [ -d "$f" ] && INS_D "$f" || INS_F "$f"
+    done
+}
+
+PRESET_PKG(){
+    case "$1" in
+    kernel|linux)
+        depmod -b "DESTDIR"
+    ;;
+    systemd)
+        chroot "$DESTDIR" /usr/bin/systemctl preset-all
+    ;;
+    esac
+}
+
+RUN_ONCE(){
+    local stadir="RUN_${0##*/}.$(date +%d)/$1"
+    [ -d "$stadir" ] || install -d "$stadir"
+    if [[ ! -e "${stadir}/.${2}.${DESTDIR//\/}.run" ]]; then
+        "$1" "$2"
+        touch "${stadir}/.${2}.${DESTDIR//\/}.run"
+    fi
+}
+
+DELETE_L10N(){
+    pushd "$DESTDIR/usr/share/locale" &>/dev/null
+    rm -rf !(zh*|en*)
+    popd &>/dev/null
+}
+
+OTHER_CHANGE(){
+    for l in {lib,{,s}bin}; do
+        [ -L "$DESTDIR/$l" ] || ln -sv "usr/$l" "$DESTDIR/$l"
+    done
+    for i in "$DESTDIR/usr/lib/systemd/systemd"*; do
+        [ -x "$i" ] || chmod +x "$i"
+    done
+}
+
+
+((EUID==0)) || exit 123
+[ -n "$DESTDIR" ] || DESTDIR="/mntt"
+for i in ${PKG[@]}; do RUN_ONCE "COPY_PKG_FILES" "$i"; done
+for i in ${PKG[@]}; do RUN_ONCE "PRESET_PKG" "$i"; done
+[ -d "$DESTDIR/usr/share/locale" ] && DELETE_L10N
+"OTHER_CHANGE"
