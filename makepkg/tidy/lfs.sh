@@ -64,11 +64,21 @@ _provides_two() {
     [[ -z "${_provides[@]}" ]] || provides=("${_provides[@]}")
 }
 
+_group_fix() {
+	for i in ${groups[@]}; do
+		echo "$i" >> "$srcdir/g"
+	done
+	awk '!a[$0]++' "$srcdir/g" > "$srcdir/groups"
+	rm "$srcdir/g"
+	groups=($(<"$srcdir/groups"))
+}
+
 tidy_lfs() {
 	if check_option "lfs" "y"; then
         if [[ "${pkgname//*-/-}" != '-lfs' ]]
         then
             [[ "${groups[@]}" =~ 'lfs-core' ]] || groups+=(lfs)
+			[[ -z "${groups[@]}" ]] || _group_fix
             [[ -z "${provides[@]}" ]] && _provides_one || _provides_two
         else
             [[ -z "${provides[@]}" ]] && _provides_one || _provides_two
