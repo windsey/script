@@ -18,18 +18,20 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-[[ -n "$LIBMAKEPKG_BUILDENV_REPRO_SH" ]] && return
-LIBMAKEPKG_BUILDENV_REPRO_SH=1
+[[ -n "$LIBMAKEPKG_BUILDENV_EPOCH_SH" ]] && return
+LIBMAKEPKG_BUILDENV_EPOCH_SH=1
 
 LIBRARY=${LIBRARY:-'@DATADIR@/makepkg'}
 
 source "$LIBRARY/util/option.sh"
 
-build_options+=('repro')
-buildenv_functions+=('buildenv_repro')
+build_options+=('epoch')
+buildenv_functions+=('buildenv_epoch')
 
-buildenv_repro() {
-	if check_option "repro" "y" && [[ -e "/etc/pacman.d/epoch" ]]; then
+buildenv_epoch() {
+	if check_option "epoch" "y" && [[ -e "/etc/pacman.d/epoch" ]]; then
 		. "/etc/pacman.d/epoch"
+	elif check_option "epoch" "y"; then
+		SOURCE_DATE_EPOCH=0
 	fi
 }
