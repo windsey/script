@@ -66,6 +66,7 @@ usr/share/locale/et
 usr/share/locale/eu
 usr/share/locale/eu_ES
 usr/share/locale/fa
+usr/share/locale/fa_IR
 usr/share/locale/ff
 usr/share/locale/fi
 usr/share/locale/fil
@@ -82,6 +83,7 @@ usr/share/locale/ga
 usr/share/locale/gd
 usr/share/locale/gez
 usr/share/locale/gl
+usr/share/locale/gl_ES
 usr/share/locale/gn
 usr/share/locale/gr
 usr/share/locale/gu
@@ -96,8 +98,11 @@ usr/share/locale/hsb
 usr/share/locale/ht
 usr/share/locale/hu
 usr/share/locale/hy
+usr/share/locale/hy_AM
+usr/share/locale/hye
 usr/share/locale/ia
 usr/share/locale/id
+usr/share/locale/ie
 usr/share/locale/io
 usr/share/locale/is
 usr/share/locale/it
@@ -150,6 +155,7 @@ usr/share/locale/ne
 usr/share/locale/nl
 usr/share/locale/nl_NL.UTF-8
 usr/share/locale/nn
+usr/share/locale/no
 usr/share/locale/no.us-ascii
 usr/share/locale/nso
 usr/share/locale/nv
@@ -157,6 +163,7 @@ usr/share/locale/oc
 usr/share/locale/or
 usr/share/locale/pa
 usr/share/locale/pap
+usr/share/locale/pa_PK
 usr/share/locale/pi
 usr/share/locale/pl
 usr/share/locale/pl_PL.UTF-8
@@ -189,6 +196,7 @@ usr/share/locale/sr@ije
 usr/share/locale/sr@ijekavian
 usr/share/locale/sr@ijekavianlatin
 usr/share/locale/sr@latin
+usr/share/locale/sr@Latn
 usr/share/locale/sv
 usr/share/locale/sw
 usr/share/locale/ta
