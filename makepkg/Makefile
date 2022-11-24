@@ -1,4 +1,4 @@
-CONF_FILES  = ${wildcard pacman.d/*}
+CONF_FILES  = $$(find pacman.d -maxdepth 1 -type f)
 INS_FILES = ${wildcard tidy/*.sh}
 ENV_FILES = ${wildcard buildenv/*.sh}
 
