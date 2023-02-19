@@ -23,7 +23,8 @@ _find_dep_pkg() {
     LD_LIB="$(awk '!a[$0]++' "$srcdir/so.addep")"
     for so in ${LD_LIB[@]}; do
         if [[ ! -e "${so#/}" ]] && [[ ! "$so" =~ 'fakeroot.so' ]] && \
-        [[ "$so" != 'linux-vdso.so.1' && "${so##*/}" != 'ld-linux-x86-64.so.2' ]]
+        [[ "$so" != 'linux-vdso.so.1' && "${so##*/}" != 'ld-linux-x86-64.so.2' ]] && \
+		[[ "${so##*/}" != 'libc.so.6' ]]
         then
             local_pkg=$(pacman -Q --quiet --owns "$so" 2>/dev/null || return 0)
             [[ -z "${local_pkg}" ]] || _depends+=("${local_pkg}")
@@ -64,6 +65,7 @@ _add_depends() {
     if [[ -n "${depends[@]}" ]]; then
         for dep in ${depends[@]}; do echo "$dep" >>"$srcdir/dep"; done
         sort "$srcdir/dep" > "$srcdir/depends" && rm -f "$srcdir/dep"
+        sed -i "/^${pkgname}$/d" "$srcdir/depends"
         depends=("$(<"$srcdir/depends")")
     fi
 }
