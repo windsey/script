@@ -28,6 +28,7 @@ source "$LIBRARY/util/option.sh"
 
 packaging_options+=('html')
 tidy_remove+=('tidy_html')
+stag_name="HTML-staging-${pkgname}"
 
 _html() {
     local html_dir HTML_DIR
@@ -39,17 +40,21 @@ _html() {
     done
     if [[ -n "${HTML_DIR[@]}" ]]; then
         for d in ${HTML_DIR[@]}; do
-            install -d "${PKGDEST}/HTML/usr/share/doc/$pkgname"
-            cp -a "$d" "${PKGDEST}/HTML/usr/share/doc/$pkgname/"html
+            install -d "${PKGDEST}/${stag_name}/usr/share/doc/$pkgname"
+            cp -a "$d" "${PKGDEST}/${stag_name}/usr/share/doc/$pkgname/"html
             rm -r "$d"
+            local AD="$(realpath $(dirname $d))" BD="$(realpath $(dirname $d)/..)"
+            find "$AD" -type d -empty -delete
+            find "$BD" -type d -empty -delete
         done
-        pushd "${PKGDEST}/HTML" &>/dev/null
+        pushd "${PKGDEST}/${stag_name}" &>/dev/null
         [[ ! -f "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz" ]] || rm -f "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz"
-        bsdtar -zcf "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz" *
+        install -d "${PKGDEST}/HTML"
+        bsdtar -zcf "${PKGDEST}/HTML/${pkgname}-${pkgver}-html.tgz" .
         popd &>/dev/null
-        rm -r "${PKGDEST}/HTML/usr"
+        rm -r "${PKGDEST}/${stag_name}"
     fi
-	
+
     for d in ${DOC_DIRS[@]}; do
         [[ ! -d "$d" ]] || find "$d" -depth -type d -exec rmdir '{}' \; 2>/dev/null
     done

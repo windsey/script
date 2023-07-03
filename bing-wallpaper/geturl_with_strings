@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+
+# -*- coding: utf-8 -*-
+
+import json
+import re
+import requests
+
+
+def get_bing_image():
+    url = 'https://cn.bing.com'
+    headers = {
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36'
+    }
+
+    res = requests.get(url, headers=headers)
+    res.encoding = res.apparent_encoding
+    ret = re.search("var _model =(\{.*?\});", res.text)
+    if not ret:
+        return
+
+    data = json.loads(ret.group(1))
+    image_content = data['MediaContents'][0]['ImageContent']
+
+    return {
+        'headline': image_content['Headline'],
+        'title': image_content['Title'],
+        'description': image_content['Description'],
+        'copyright': image_content['Copyright'],
+        'image_url': image_content['Image']['Url'],
+        'main_text': image_content['QuickFact']['MainText']
+    }
+
+
+if __name__ == '__main__':
+    res = get_bing_image()
+    print(json.dumps(res, ensure_ascii=False, indent=2))
+
+# https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&qlt=50
+# https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_1920x1080.jpg
+# https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_UHD.jpg
+
+#{
+#  "headline": "去放风筝吧！",
+#  "title": "阿德莱德国际风筝节，澳大利亚",
+#  "description": "在风和日丽的日子里放风筝，还有比这更简单的快乐吗？风筝这项神奇的发明具体源于何时尚未可知，但关于放风筝的第一份书面记录来自公元前200年的中国。中国最初使用风筝来测量距离，但是随着时间的推移，它们逐渐被用于钓鱼、运动、科学、庆祝及各项娱乐活动。风筝有很多形状，也有各种材料。其实你自己就可以制作简单的风筝，找个风和日丽的日子，放风筝去吧！",
+#  "image_url": "https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_1920x1080.jpg&rf=LaDigue_1920x1080.jpg",
+#  "main_text": "风筝不止能飞天，还能潜水，“水下风筝”可用于发电。"
+#}
+
+# 效果一样, 都是UHD
+# https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_UHD.jpg&rf=LaDigue_UHD.jpg
+# https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_UHD.jpg&rf=LaDigue_1920x1080.jpg
+
+
+
+"""
+
+接口地址：
+ https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN
+ https://global.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&pid=hp&FORM=BEHPTB&uhd=1&uhdwidth=3840&uhdheight=2160&mkt=en-US
+
+ 参数			含义
+
+ format		返回数据形式:  js - json , xml - xml
+ idx			截止天数:  0-今天, -1 - 截止至明天, 1 截止至昨天
+				最多返回 一周的，即最大值为7，大于7的都是一样的;
+				-1 0 很大概率是一样的
+
+ n				返回数量
+ mkt			地区: zh-CN,en-US,en-GB,de-DE,ja-JP
+
+"""

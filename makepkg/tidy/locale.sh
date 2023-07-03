@@ -16,18 +16,20 @@ tidy_remove+=('tidy_locale')
 
 _remove_locale() {
     if [[ -d "$1" ]]; then
-        install -d "${PKGDEST}/L10N/$pkgname/$(dirname $1)"
-        cp -a "$1" "${PKGDEST}/L10N/$pkgname/$(dirname $1)" && rm -rf -- "$1"
+        install -d "${PKGDEST}/L10N-staging-$pkgname/$(dirname $1)"
+        cp -a "$1" "${PKGDEST}/L10N-staging-$pkgname/$(dirname $1)" && rm -rf -- "$1"
+		find usr/share/locale -type d -empty -delete
     fi
 }
 
 _package_l10n() {
-    if [[ -d "${PKGDEST}/L10N/$pkgname" ]]; then
-        pushd "${PKGDEST}/L10N/$pkgname" &>/dev/null
+    if [[ -d "${PKGDEST}/L10N-staging-$pkgname" ]]; then
+        pushd "${PKGDEST}/L10N-staging-$pkgname" >/dev/null 2>&1
             [[ ! -f "${PKGDEST}/L10N/$pkgname-$pkgver-l10n.tgz" ]] || rm -f "${PKGDEST}/L10N/$pkgname-$pkgver-l10n.tgz"
-            bsdtar -zcf "${PKGDEST}/L10N/$pkgname-$pkgver-l10n.tgz" *
-        popd &>/dev/null
-        rm -r "${PKGDEST}/L10N/$pkgname"
+            install -d "${PKGDEST}/L10N"
+            bsdtar -zcf "${PKGDEST}/L10N/$pkgname-$pkgver-l10n.tgz" .
+        popd >/dev/null 2>&1
+        rm -r "${PKGDEST}/L10N-staging-$pkgname"
     fi
 }
 

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+python3 geturl >/tmp/bingwp.url
+awk '!seen[$0]++' "/tmp/bingwp.url" >/tmp/bingurl.tmp
+while read -r url; do
+	google-chrome --incognito "$url"
+	sleep 3
+done </tmp/bingurl.tmp
+rm -f -v /tmp/{bingwp.url,bingurl.tmp}

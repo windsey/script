@@ -23,15 +23,14 @@ LIBMAKEPKG_TIDY_XZ_SH=1
 
 LIBRARY=${LIBRARY:-'@DATADIR@/makepkg'}
 
-source "$LIBRARY/util/message.sh"
 source "$LIBRARY/util/option.sh"
 
-packaging_options+=('xz')
-tidy_remove+=('tidy_xz')
+build_options+=('xz')
+buildenv_functions+=('buildenv_xz')
 
-tidy_xz() {
+buildenv_xz() {
 	if check_option "xz" "y"; then
-		msg2 "$(gettext "Compress the package using xz...")"
 		PKGEXT='.pkg.tar.xz'
+		SRCEXT='.src.tar.xz'
 	fi
 }

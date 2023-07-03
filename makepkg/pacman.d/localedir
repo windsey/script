@@ -50,6 +50,7 @@ usr/share/locale/de
 usr/share/locale/de_AT.UTF-8
 usr/share/locale/de_CH
 usr/share/locale/de_CH.UTF-8
+usr/share/locale/de_DE
 usr/share/locale/de_DE.UTF-8
 usr/share/locale/de@hebrew
 usr/share/locale/de.us-ascii
@@ -97,6 +98,7 @@ usr/share/locale/hr
 usr/share/locale/hsb
 usr/share/locale/ht
 usr/share/locale/hu
+usr/share/locale/hu_HU
 usr/share/locale/hy
 usr/share/locale/hy_AM
 usr/share/locale/hye
@@ -106,6 +108,7 @@ usr/share/locale/ie
 usr/share/locale/io
 usr/share/locale/is
 usr/share/locale/it
+usr/share/locale/it_IT
 usr/share/locale/iu
 usr/share/locale/ja
 usr/share/locale/ja_JP.UTF-8

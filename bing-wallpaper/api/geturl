@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
+import requests
+import json
+
+
+def get_json(C,X):
+    url = 'https://global.bing.com/HPImageArchive.aspx?format=js&pid=hp&FORM=BEHPTB&uhd=1&uhdwidth=3840&uhdheight=2160&n=1&mkt=' + C + '&idx=' + X
+    headers = {
+        'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+    }
+    resp = requests.get(url=url,headers=headers)
+    jsoned = json.loads(resp.content.decode("utf-8"))
+    finalu = jsoned['images'][0]['urlbase']
+    return "https://www.bing.com" + finalu + '_UHD.jpg'
+"""
+    finalu = jsoned['images'][0]['url']
+    return "https://www.bing.com" + finalu
+"""
+
+
+if __name__ == '__main__':
+	country = ['zh-CN', 'ja-JP', 'en-US', 'fr-FR', 'es-ES']
+	number = ['-1', '0', '1', '2', '3', '4', '5', '6', '7']
+	for i in country:
+		for n in number:
+			image_url = get_json(i,n)
+			print(image_url)

@@ -24,7 +24,7 @@ _find_dep_pkg() {
     for so in ${LD_LIB[@]}; do
         if [[ ! -e "${so#/}" ]] && [[ ! "$so" =~ 'fakeroot.so' ]] && \
         [[ "$so" != 'linux-vdso.so.1' && "${so##*/}" != 'ld-linux-x86-64.so.2' ]] && \
-		[[ "${so##*/}" != 'libc.so.6' ]]
+        [[ "${so##*/}" != 'libc.so.6' ]]
         then
             local_pkg=$(pacman -Q --quiet --owns "$so" 2>/dev/null || return 0)
             [[ -z "${local_pkg}" ]] || _depends+=("${local_pkg}")
@@ -42,7 +42,7 @@ _find_dep_pkg() {
 
 _add_depends() {
     local _lib_so _so
-    local _libraries=("$(find . -type f -name '.so*')")
+    local _libraries=("$(find . -type f -name '*.so*')")
     local _binaries=("$(find . -type f -not -name '*.so*')")
 
     if [[ -n "${_libraries}" ]]; then

@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+
+# -*- coding: utf-8 -*-
+
+import parsel
+import requests
+
+
+def get_bing_image():
+    url = 'https://cn.bing.com'
+    headers = {
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36'
+#       'user-agent': 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Mobile Safari/537.36'
+    }
+
+    res = requests.get(url, headers=headers)
+    res.encoding = res.apparent_encoding
+    sel = parsel.Selector(res.text, base_url=url)
+    return sel.css('#preloadBg::attr(href)').extract_first()
+
+if __name__ == '__main__':
+    image_url = get_bing_image()
+    print(image_url)
+
+# https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&qlt=50
+# https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_1920x1080.jpg
+# https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_UHD.jpg
+
+# https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_768x1366.jpg
+# https://s.cn.bing.net/th?id=OHR.KiteDay_ZH-CN7813901578_1080x1920.jpg
+# https://s.cn.bing.net/th?id=OHR.MinouLighthouse_ZH-CN7940024247_768x1366.jpg
+# https://s.cn.bing.net/th?id=OHR.MinouLighthouse_ZH-CN7940024247_1080x1920.jpg

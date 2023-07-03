@@ -15,8 +15,8 @@ INSDIR = ${INSTALLDIR}/tidy
 ENVDIR = ${INSTALLDIR}/buildenv
 
 build:
-	sed -e 's:@DATADIR@:${DATADIR}:g' -i ${INS_FILES} ${ENV_FILES}
-	sed -e 's:@RUNSHELL@:${RUNSHELL}:g' -i ${INS_FILES} ${ENV_FILES}
+	sed -e 's:@DATADIR@:${DATADIR}:g' -i.ori ${INS_FILES} ${ENV_FILES}
+	sed -e 's:@RUNSHELL@:${RUNSHELL}:g' -i.ori ${INS_FILES} ${ENV_FILES}
 
 install: build
 	install -d "${CONFDIR}" "${INSDIR}" "${ENVDIR}"
