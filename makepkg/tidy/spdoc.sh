@@ -19,8 +19,9 @@ split_doc_pkg() {
 	for doc_dir in ${DOC_DIRS[@]}; do
 		[[ -d "$doc_dir" ]] || continue
 		[[ -n "$(find $doc_dir ! -type d)" ]] || continue
+		(("$(du -s $doc_dir | cut -f1)">512)) || continue
 
-		local stag_base="${PKGDEST}/split-doc-staging_${pkgname}"
+		local stag_base="${BUILDDIR}/split-doc-staging_${pkgname}"
 		local stag_name="$stag_base/$(dirname $doc_dir)"
 		install -d "${stag_name}"
 
@@ -49,7 +50,7 @@ split_doc_pkg() {
 
 	if test "${SPLIT_DOC_PKG}"; then
 		msg2 "$(gettext "Splitting "%s" files into separate packages...")" "doc"
-		install -Dm644 /dev/stdin "${PKGDEST}/PKGBUILD" <<-EOF
+		install -Dm644 /dev/stdin "${BUILDDIR}/PKGBUILD" <<-EOF
 		pkgname=${pkgname}-doc
 		pkgver=${pkgver}
 		pkgrel=${pkgrel}
@@ -58,23 +59,14 @@ split_doc_pkg() {
 		url="$url"
 		license=(${license[@]})
 		groups=(split-doc)
-		provides=()
-		replaces=()
-		conflicts=()
-		depends=()
-		checkdepends=()
-		makedepends=()
-		optdepends=()
-		backup=()
 		options=('!emptydirs' docs '!spdoc' xz '!addep')
 		SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH
 		package() {
-			mv "${stag_base}/"* \${pkgdir}
-			rmdir "${stag_base}"
+			mv "${stag_base}/"* \${pkgdir} && rmdir "${stag_base}"
 		}
 		EOF
 		optdepends+=("${pkgname}-doc: Split doc files for $pkgname")
-		(cd "${PKGDEST}"; LD_LIBRARY_PATH= LD_PRELOAD= FAKEROOTKEY= FAKED_MODE= makepkg -c &> /dev/null &)
+		(cd "${BUILDDIR}"; LD_LIBRARY_PATH= LD_PRELOAD= FAKEROOTKEY= FAKED_MODE= makepkg -c &> /dev/null &)
 	fi
 }
 
