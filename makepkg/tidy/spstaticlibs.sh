@@ -19,16 +19,16 @@ split_staticlibs_pkg() {
 	local lib_split_pkg
 	while IFS= read -rd '' l; do
 		if [[ -f "${l%.a}.so" || -h "${l%.a}.so" ]]; then
-			_pick split_static_libs "$l"
-			lib_split_pkg=1
+			_pick split_static_libs "$l"; lib_split_pkg=1
 		fi
 	done < <(find . ! -type d -name "*.a" -print0)
 
 	[[ -n "${lib_split_pkg}" ]] || return
 	msg2 "$(gettext "Splitting static library files into separate packages...")"
 
-	local stag_name="${BUILDDIR}/split-staticlibs-staging_${pkgname}"
-	mv "${srcdir}/split_static_libs" "${stag_name}"
+	local stag_name="$(mktemp -d)"
+	mv "${srcdir}/split_static_libs/"* "${stag_name}"
+	rmdir "${srcdir}/split_static_libs/"
 
 	install -Dm644 /dev/stdin "${BUILDDIR}/PKG" <<-EOF
 	pkgname=${pkgname}-static
@@ -39,14 +39,14 @@ split_staticlibs_pkg() {
 	url="$url"
 	license=(${license[@]})
 	groups=(split-staticlibs)
-	options=('!emptydirs' !docs '!spstaticlibs' xz '!addep')
+	options=(!emptydirs !docs !spstaticlibs xz !addep)
 	SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH
 	package() {
 		mv "${stag_name}/"* \${pkgdir} && rmdir "${stag_name}"
 	}
 	EOF
 	optdepends+=("${pkgname}-static: Split static library files for $pkgname")
-	(cd "${BUILDDIR}"; LD_LIBRARY_PATH= LD_PRELOAD= FAKEROOTKEY= FAKED_MODE= makepkg -cp PKG &> /dev/null &)
+	(cd "${BUILDDIR}"; LD_LIBRARY_PATH= LD_PRELOAD= FAKEROOTKEY= FAKED_MODE= makepkg -cp PKG &> /dev/null)
 }
 
 tidy_spstaticlibs() {

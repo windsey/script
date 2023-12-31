@@ -35,7 +35,7 @@ _package_l10n() {
 
 tidy_locale() {
 	if [[ -n "${LOCALE_DIRS[*]}" ]] && ! check_option "locale" "y"; then
-		msg2 "$(gettext "Removing the message translation file for the specified language...")"
+		msg2 "$(gettext "Removing unwanted message translation files...")"
 		for d in ${LOCALE_DIRS[@]}; do _remove_locale "$d"; done
 		_package_l10n
 	fi

@@ -21,7 +21,7 @@ split_doc_pkg() {
 		[[ -n "$(find $doc_dir ! -type d)" ]] || continue
 		(("$(du -s $doc_dir | cut -f1)">512)) || continue
 
-		local stag_base="${BUILDDIR}/split-doc-staging_${pkgname}"
+		local stag_base="$(mktemp -d)"
 		local stag_name="$stag_base/$(dirname $doc_dir)"
 		install -d "${stag_name}"
 
@@ -59,14 +59,14 @@ split_doc_pkg() {
 		url="$url"
 		license=(${license[@]})
 		groups=(split-doc)
-		options=('!emptydirs' docs '!spdoc' xz '!addep')
+		options=(!emptydirs docs !spadoc xz !addep !bldpkg)
 		SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH
 		package() {
 			mv "${stag_base}/"* \${pkgdir} && rmdir "${stag_base}"
 		}
 		EOF
 		optdepends+=("${pkgname}-doc: Split doc files for $pkgname")
-		(cd "${BUILDDIR}"; LD_LIBRARY_PATH= LD_PRELOAD= FAKEROOTKEY= FAKED_MODE= makepkg -c &> /dev/null &)
+		(cd "${BUILDDIR}"; LD_LIBRARY_PATH= LD_PRELOAD= FAKEROOTKEY= FAKED_MODE= makepkg -c &> /dev/null)
 	fi
 }
 

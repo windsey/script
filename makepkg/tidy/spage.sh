@@ -24,8 +24,7 @@ split_page_pkg() {
 	for page_dir in ${MAN_DIRS[@]}; do
 		[[ -d "$page_dir" ]] || continue
 		[[ -n "$(find $page_dir ! -type d)" ]] || continue
-		page_dirs+=("$page_dir")
-		page_run_continue=1
+		page_dirs+=("$page_dir"); page_run_continue=1
 	done
 
 	[[ -n "$page_run_continue" ]] || return
@@ -37,8 +36,9 @@ split_page_pkg() {
 		_pick split_page "$page_dir"
 	done
 
-	local stag_name="${BUILDDIR}/split-page-staging_${pkgname}"
-	! mv "${srcdir}/split_page" "${stag_name}" || page_split_pkg=1
+	local stag_name="$(mktemp -d)"
+	! mv "${srcdir}/split_page/"* "${stag_name}" || page_split_pkg=1
+	rmdir "${srcdir}/split_page/"
 
 	if test "${page_split_pkg}"; then
 		msg2 "$(gettext "Splitting "%s" files into separate packages...")" "info/man"
@@ -51,7 +51,7 @@ split_page_pkg() {
 		url="$url"
 		license=(${license[@]})
 		groups=(split-page)
-		options=('!emptydirs' !docs '!spage' xz '!addep')
+		options=(!emptydirs !docs !spage xz !addep !bldpkg)
 		SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH
 		package() {
 			mv "${stag_name}/"* \${pkgdir} && rmdir "${stag_name}"
