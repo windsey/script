@@ -50,7 +50,7 @@ split_doc_pkg() {
 
 	if test "${SPLIT_DOC_PKG}"; then
 		msg2 "$(gettext "Splitting "%s" files into separate packages...")" "doc"
-		install -Dm644 /dev/stdin "${BUILDDIR}/PKGBUILD" <<-EOF
+		install -Dm644 /dev/stdin "${BUILDDIR}/.DOC" <<-EOF
 		pkgname=${pkgname}-doc
 		pkgver=${pkgver}
 		pkgrel=${pkgrel}
@@ -59,14 +59,13 @@ split_doc_pkg() {
 		url="$url"
 		license=(${license[@]})
 		groups=(split-doc)
-		options=(!emptydirs docs !spadoc xz !addep !bldpkg)
+		options=(!emptydirs docs !spdoc xz !addep !bldpkg)
 		SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH
 		package() {
 			mv "${stag_base}/"* \${pkgdir} && rmdir "${stag_base}"
 		}
 		EOF
-		optdepends+=("${pkgname}-doc: Split doc files for $pkgname")
-		(cd "${BUILDDIR}"; LD_LIBRARY_PATH= LD_PRELOAD= FAKEROOTKEY= FAKED_MODE= makepkg -c &> /dev/null)
+		(cd "${BUILDDIR}"; LD_PRELOAD= FAKEROOTKEY= makepkg -cp .DOC >/dev/null && rm .DOC)
 	fi
 }
 

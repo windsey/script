@@ -70,7 +70,7 @@ tidy_cus_cmd() {
 }
 
 tidy_zzz_lfs() {
-	if check_option "lfs" "y"; then
+	if check_option "lfs" "y" && [[ $CHOST == x86_64-*-gnu ]]; then
 		case "${pkgname}" in *-lib32|*-libx32) ;;
 			*) _add_group ;;
 		esac

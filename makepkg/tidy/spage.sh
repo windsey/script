@@ -42,7 +42,7 @@ split_page_pkg() {
 
 	if test "${page_split_pkg}"; then
 		msg2 "$(gettext "Splitting "%s" files into separate packages...")" "info/man"
-		install -Dm644 /dev/stdin "${BUILDDIR}/PMAN" <<-EOF
+		install -Dm644 /dev/stdin "${BUILDDIR}/.MAN" <<-EOF
 		pkgname=${pkgname}-man
 		pkgver=${pkgver}
 		pkgrel=${pkgrel}
@@ -51,15 +51,14 @@ split_page_pkg() {
 		url="$url"
 		license=(${license[@]})
 		groups=(split-page)
-		options=(!emptydirs !docs !spage xz !addep !bldpkg)
+		options=(${options[@]} !emptydirs !docs !spage xz !addep !bldpkg)
 		SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH
 		package() {
 			mv "${stag_name}/"* \${pkgdir} && rmdir "${stag_name}"
 		}
 		EOF
-		[ "${pkgname}" != "openssl" ] || echo 'options+=(!zipman)' >> "${BUILDDIR}/PMAN"
-		optdepends+=("${pkgname}-man: Split info/man files for $pkgname")
-		(cd "${BUILDDIR}"; LD_LIBRARY_PATH= LD_PRELOAD= FAKEROOTKEY= FAKED_MODE= makepkg -cp PMAN &> /dev/null)
+		case " ${spage_unzipman_pkg[@]} " in *" ${pkgname} "*) echo 'options+=(!zipman)' >> "${BUILDDIR}/.MAN";; esac
+		(cd "${BUILDDIR}"; LD_PRELOAD= FAKEROOTKEY= makepkg -cp .MAN >/dev/null && rm .MAN)
 	fi
 }
 

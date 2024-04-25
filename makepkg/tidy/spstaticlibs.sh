@@ -30,7 +30,7 @@ split_staticlibs_pkg() {
 	mv "${srcdir}/split_static_libs/"* "${stag_name}"
 	rmdir "${srcdir}/split_static_libs/"
 
-	install -Dm644 /dev/stdin "${BUILDDIR}/PKG" <<-EOF
+	install -Dm644 /dev/stdin "${BUILDDIR}/.PKG" <<-EOF
 	pkgname=${pkgname}-static
 	pkgver=${pkgver}
 	pkgrel=${pkgrel}
@@ -39,14 +39,13 @@ split_staticlibs_pkg() {
 	url="$url"
 	license=(${license[@]})
 	groups=(split-staticlibs)
-	options=(!emptydirs !docs !spstaticlibs xz !addep)
+	options=(${options[@]} !emptydirs !docs !spstaticlibs xz !addep !bldpkg)
 	SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH
 	package() {
 		mv "${stag_name}/"* \${pkgdir} && rmdir "${stag_name}"
 	}
 	EOF
-	optdepends+=("${pkgname}-static: Split static library files for $pkgname")
-	(cd "${BUILDDIR}"; LD_LIBRARY_PATH= LD_PRELOAD= FAKEROOTKEY= FAKED_MODE= makepkg -cp PKG &> /dev/null)
+	(cd "${BUILDDIR}"; LD_PRELOAD= FAKEROOTKEY= makepkg -cp .PKG >/dev/null && rm .PKG)
 }
 
 tidy_spstaticlibs() {

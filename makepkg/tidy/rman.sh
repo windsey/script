@@ -15,7 +15,7 @@ packaging_options+=('rman')
 tidy_remove+=('tidy_rman')
 
 tidy_rman() {
-	if [[ -n "${RM_MAN[*]}" ]] && ! check_option "rman" "n"; then
+	if [[ -n ${RM_MAN[*]} ]] && ! check_option "rman" "n"; then
 		msg2 "$(gettext "Removing unwanted man pages...")"
 		rm -rf -- ${RM_MAN[@]}
 	fi

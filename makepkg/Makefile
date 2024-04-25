@@ -1,4 +1,4 @@
-CONF_FILES  = $$(find pacman.d -maxdepth 1 -type f)
+CONF_FILES  = $$(find makepkg.conf.d -maxdepth 1 -type f)
 INS_FILES = ${wildcard tidy/*.sh}
 ENV_FILES = ${wildcard buildenv/*.sh}
 
@@ -8,7 +8,7 @@ BINDIR    ?= ${PREFIX}/bin
 DATADIR ?= ${PREFIX}/share
 RUNSHELL ?= ${BINDIR}/bash
 
-CONFDIR = ${DESTDIR}/${SYSCONFDIR}/pacman.d
+CONFDIR = ${DESTDIR}/${SYSCONFDIR}/makepkg.conf.d
 INSTALLDIR = ${DESTDIR}/${DATADIR}/makepkg
 
 INSDIR = ${INSTALLDIR}/tidy
